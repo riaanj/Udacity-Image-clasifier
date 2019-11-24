@@ -20,9 +20,10 @@ parser.add_argument('photo',help="Path to flower image")
 parser.add_argument('checkpoint',help="Checkpoint to load")
 parser.add_argument('--topk',default='1',dest='topk',help="Top k amount of results to return (Default 1)",type=int)
 parser.add_argument('--category_names',dest='category_names',default='cat_to_name.json',help="The category names file (Default cat_to_name.json) ")
+parser.add_argument('--gpu','--GPU',action='store_true',default=False,dest='gpu',help="Enable predictions with GPU (Default CPU)")
 args = parser.parse_args()
 
-if torch.cuda.is_available():
+if torch.cuda.is_available() and args.gpu == True:
     device='cuda'
 else:
     device='cpu'
@@ -33,7 +34,7 @@ def load_checkpoint(file_path):
         checkpoint = torch.load(file_path)
     else:
         checkpoint = torch.load(file_path,'cpu')
-    print("Loading checkpoint {} with architecture: {}".format(file_path,checkpoint['arch']))
+    print("Loading checkpoint {} with architecture: {}. Doing prediction with {}".format(file_path,checkpoint['arch'],device) )
     if checkpoint['arch'] == 'vgg16':
         model = models.vgg16(pretrained=True)
         model.classifier = checkpoint['classifier']
