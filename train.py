@@ -105,7 +105,7 @@ if args.arch == 'vgg16':
                             ('output',nn.LogSoftmax(dim=1))
                             ]))
 
-if args.arch == 'densenet121':
+elif args.arch == 'densenet121':
     model =  models.densenet121(pretrained=True)
     # define new Classifier
     classifier = nn.Sequential (OrderedDict ([
@@ -119,7 +119,9 @@ if args.arch == 'densenet121':
                             ('fc4',nn.Linear(args.hidden_units,102)),
                             ('output',nn.LogSoftmax(dim=1))
                             ]))
-    
+else:
+    print("Model {} is not supported, please choose either vgg16 or densenet121".format(args.arch))
+    exit(1)
 # Dont train gradiants again for vgg
 for p in model.parameters():
         p.requires_grad = False
